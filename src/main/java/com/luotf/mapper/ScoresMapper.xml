@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luotf.mapper.ScoresMapper">
+	<cache /> 
+	<resultMap id="BaseResultMap" type="com.luotf.model.Scores">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="course" jdbcType="VARCHAR" property="course" />
+		<result column="introduction" jdbcType="VARCHAR" property="introduction" />
+		<result column="classs" jdbcType="VARCHAR" property="classs" />
+		<result column="content" jdbcType="VARCHAR" property="content" />
+		<result column="student" jdbcType="VARCHAR" property="student" />
+		<result column="scores" jdbcType="INTEGER" property="scores" />
+		<result column="year" jdbcType="VARCHAR" property="year" />
+		<result column="semester" jdbcType="VARCHAR" property="semester" />
+		<result column="time" jdbcType="TIMESTAMP" property="time" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, course,introduction, classs,content,student,scores, year,semester,time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_scores
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectScoresBycourse" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_scores
+		where course = #{course,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectGroupLikeScoresListByPage" parameterType="Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_scores
+		<where>
+			<if test="course!=null and course!=''">
+				and (course like CONCAT(CONCAT('%', #{course}), '%') or classs like
+				CONCAT(CONCAT('%', #{classs}), '%') or student like
+				CONCAT(CONCAT('%', #{student}), '%') or year like
+				CONCAT(CONCAT('%', #{year}), '%'))
+			</if>
+			
+			<if test="startTime!=null and startTime!=''">
+				and DATE_FORMAT(time,'%Y-%m-%d') BETWEEN #{startTime} AND #{endTime}
+			</if>
+		</where>
+		ORDER BY time DESC
+	</select>
+	
+	
+	<select id="selectLikeScoresListByPage" parameterType="Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_scores
+		<where>
+			<if test="course!=null and course!=''">
+				and (course like CONCAT(CONCAT('%', #{course}), '%') or classs like
+				CONCAT(CONCAT('%', #{classs}), '%') or student like
+				CONCAT(CONCAT('%', #{student}), '%') or year like
+				CONCAT(CONCAT('%', #{year}), '%'))
+			</if>
+			
+			<if test="startTime!=null and startTime!=''">
+				and DATE_FORMAT(time,'%Y-%m-%d') BETWEEN #{startTime} AND #{endTime}
+			</if>
+		</where>
+		ORDER BY time DESC
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_scores
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<insert id="insert" parameterType="com.luotf.model.Scores">
+		insert into t_scores (id, course, introduction, classs,
+		content,student,scores,year,semester,time)
+		values (#{id,jdbcType=INTEGER},
+		#{course,jdbcType=VARCHAR},#{introduction,jdbcType=VARCHAR},#{classs,jdbcType=VARCHAR},
+		#{content,jdbcType=VARCHAR},
+		#{student,jdbcType=VARCHAR},#{scores,jdbcType=INTEGER},
+		#{year,jdbcType=VARCHAR},#{semester,jdbcType=VARCHAR},
+		#{time,jdbcType=TIMESTAMP})
+	</insert>
+	
+	
+	<insert id="insertSelective" parameterType="com.luotf.model.Scores">
+		insert into t_scores
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="course != null">
+				course,
+			</if>
+			<if test="introduction != null">
+				introduction,
+			</if>
+			<if test="classs != null">
+				classs,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="student != null">
+				student,
+			</if>
+			<if test="scores != null">
+				scores,
+			</if>
+			<if test="year != null">
+				year,
+			</if>
+			<if test="semester != null">
+				semester,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="course != null">
+				#{course,jdbcType=VARCHAR},
+			</if>
+			<if test="introduction != null">
+				#{introduction,jdbcType=VARCHAR},
+			</if>
+			<if test="classs != null">
+				#{classs,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="student != null">
+				#{student,jdbcType=VARCHAR},
+			</if>
+			<if test="scores != null">
+				#{scores,jdbcType=INTEGER},
+			</if>
+			<if test="year != null">
+				#{year,jdbcType=VARCHAR},
+			</if>
+			<if test="semester != null">
+				#{semester,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.luotf.model.Scores">
+		update t_scores
+		<set>
+			<if test="course != null">
+				course = #{course,jdbcType=VARCHAR},
+			</if>
+			<if test="classs != null">
+				classs = #{classs,jdbcType=VARCHAR},
+			</if>
+			<if test="student != null">
+				student = #{student,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateByPrimaryKey" parameterType="com.luotf.model.Scores">
+		update t_scores
+		set course = #{course,jdbcType=VARCHAR},
+		introduction = #{introduction,jdbcType=VARCHAR},
+		classs = #{classs,jdbcType=VARCHAR},
+		scores = #{scores,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>
